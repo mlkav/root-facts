@@ -166,9 +166,8 @@ export const createModelProgressCallback = (onProgress, throttleMs = 200) => {
     const isDecoder = progress.file.includes('decoder');
     if (!isEncoder && !isDecoder) return;
 
-    // Pastikan progress dalam skala 0-100
     let raw = progress.progress;
-    if (raw > 1) raw = raw / 100; // jika ternyata 0-100
+    if (raw > 1) raw = raw / 100;
     fileProgress[progress.file] = Math.round(raw * 100);
 
     const encoderFiles = Object.entries(fileProgress)

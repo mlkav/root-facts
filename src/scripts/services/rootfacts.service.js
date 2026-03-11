@@ -34,6 +34,12 @@ class RootFactsService {
         progress_callback: onProgress ? createModelProgressCallback(onProgress) : undefined,
       });
 
+      // this.generator = await pipeline('text2text-generation', this.config.modelName, {
+      //   dtype: "q4",
+      //   device,
+      //   progress_callback: createModelProgressCallback(this.onProgress),
+      // });
+
       // Set model loaded segera setelah pipeline selesai
       this.isModelLoaded = true;
 
