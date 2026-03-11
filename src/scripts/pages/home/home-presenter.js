@@ -1,9 +1,9 @@
 // src/scripts/pages/home/home-presenter.js
-import CameraService from '../../services/camera.service.js';
-import DetectionService from '../../services/detection.service.js';
-import RootFactsService from '../../services/rootfacts.service.js';
-import { createDelay, isValidDetection } from '../../utils/index.js';
-import { APP_CONFIG } from '../../config.js';
+import CameraService from "../../services/camera.service.js";
+import DetectionService from "../../services/detection.service.js";
+import RootFactsService from "../../services/rootfacts.service.js";
+import { createDelay, isValidDetection } from "../../utils/index.js";
+import { APP_CONFIG } from "../../config.js";
 
 export default class HomePresenter {
   constructor({ view }) {
@@ -17,43 +17,40 @@ export default class HomePresenter {
   }
 
   async init() {
-    this.view.updateHeaderStatus('Memuat model...', 'loading');
-    this.view.showLoadingProgress(0, 'Menyiapkan...');
+    this.view.updateHeaderStatus("Memuat model...", "loading");
+    this.view.showLoadingProgress(0, "Menyiapkan...");
 
     try {
-      // Load cameras
       await this.cameraService.loadCameras(this.view.getCameraSelect());
 
-      // Load detection model with progress
-      this.view.updateHeaderStatus('Model deteksi...', 'loading');
+      this.view.updateHeaderStatus("Model deteksi...", "loading");
       await this.detectionService.loadModel((progress) => {
-        if (progress.status === 'loading') {
+        if (progress.status === "loading") {
           this.view.showLoadingProgress(progress.progress, progress.message);
         }
       });
 
-      // Load facts model with progress
-      this.view.updateHeaderStatus('Model fakta...', 'loading');
+      this.view.updateHeaderStatus("Model fakta...", "loading");
       await this.factsService.loadModel((progress) => {
-        if (progress.status === 'loading') {
+        if (progress.status === "loading") {
           this.view.showLoadingProgress(progress.progress, progress.message);
-        } else if (progress.status === 'downloading') {
-          this.view.updateHeaderStatus(progress.message, '');
-          const avgProgress = Math.round((progress.encoder + progress.decoder) / 2);
+        } else if (progress.status === "downloading") {
+          this.view.updateHeaderStatus(progress.message, "");
+          const avgProgress = Math.round(
+            (progress.encoder + progress.decoder) / 2,
+          );
           this.view.showLoadingProgress(avgProgress, progress.message);
-        } else if (progress.status === 'ready') {
-          // this.view.updateHeaderStatus('Model AI siap', 'ready');
-          this.view.updateHeaderStatus('Model AI siap', 'active');
-          this.view.showLoadingProgress(100, 'Siap!');
+        } else if (progress.status === "ready") {
+          this.view.updateHeaderStatus("Model AI siap", "active");
+          this.view.showLoadingProgress(100, "Siap!");
         }
       });
 
-      // Tidak perlu update status lagi di sini karena sudah ditangani callback 'ready'
       this.view.enableToggleButton();
     } catch (error) {
-      console.error('Init error:', error);
-      this.view.updateHeaderStatus('Gagal', 'error');
-      this.view.showError('Gagal memuat model: ' + error.message);
+      console.error("Init error:", error);
+      this.view.updateHeaderStatus("Gagal", "error");
+      this.view.showError(`Gagal memuat model: ${error.message}`);
     }
   }
 
@@ -68,15 +65,15 @@ export default class HomePresenter {
   async startCamera() {
     try {
       await this.cameraService.startCamera(
-        'media-video',
-        'media-canvas',
-        this.view.getCameraSelect()
+        "media-video",
+        "media-canvas",
+        this.view.getCameraSelect(),
       );
       this.view.showCameraActive();
       this.view.showLoadingState();
       this.startDetectionLoop();
     } catch (error) {
-      this.view.showError('Gagal memulai kamera: ' + error.message);
+      this.view.showError(`Gagal memulai kamera: ${error.message}`);
     }
   }
 
@@ -106,10 +103,14 @@ export default class HomePresenter {
     this.detectionLoopId = loopId;
 
     const runDetection = async () => {
-      if (!this.cameraService.isActive() || this.detectionLoopId !== loopId) return;
+      if (!this.cameraService.isActive() || this.detectionLoopId !== loopId) {
+        return;
+      }
 
       const canvas = this.cameraService.captureFrame();
-      if (!canvas) return;
+      if (!canvas) {
+        return;
+      }
 
       try {
         const result = await this.detectionService.predict(canvas);
@@ -123,7 +124,7 @@ export default class HomePresenter {
           this.generateFact(result.className);
         }
       } catch (error) {
-        console.error('Detection error:', error);
+        console.error("Detection error:", error);
       }
     };
 
@@ -143,15 +144,14 @@ export default class HomePresenter {
     this.view.showFactLoading();
     try {
       if (!this.factsService.isReady()) {
-        // Jika model belum siap, tampilkan pesan yang sesuai
-        this.view.showFactError('Model fakta masih diunduh, coba lagi nanti.');
+        this.view.showFactError("Model fakta masih diunduh, coba lagi nanti.");
         return;
       }
       const fact = await this.factsService.generateFacts(vegetable);
       this.view.showFact(fact);
     } catch (error) {
-      console.error('Generate fact error:', error);
-      this.view.showFactError(error.message || 'Gagal memuat fakta.');
+      console.error("Generate fact error:", error);
+      this.view.showFactError(error.message || "Gagal memuat fakta.");
     }
   }
 

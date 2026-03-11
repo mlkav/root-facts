@@ -1,4 +1,9 @@
-import { getCameraConstraints, getCameraConfig, getCameraErrorMessage } from '../utils/index.js';
+import {
+  getCameraConstraints,
+  getCameraConfig,
+  getCameraErrorMessage,
+  logError,
+} from "../utils/index.js";
 
 class CameraService {
   constructor() {
@@ -18,32 +23,38 @@ class CameraService {
   // TODO [Basic] Dapatkan constraints kamera berdasarkan konfigurasi dan kamera yang dipilih
   async loadCameras(cameraSelect) {
     try {
-      const tempStream = await navigator.mediaDevices.getUserMedia({ video: true });
+      const tempStream = await navigator.mediaDevices.getUserMedia({
+        video: true,
+      });
 
       const devices = await navigator.mediaDevices.enumerateDevices();
-      const cameras = devices.filter(device => device.kind === 'videoinput');
+      const cameras = devices.filter((device) => device.kind === "videoinput");
 
-      tempStream.getTracks().forEach(track => track.stop());
+      tempStream.getTracks().forEach((track) => track.stop());
 
       if (cameras.length === 0) {
-        logError('Tidak ada kamera ditemukan', new Error('Tidak ada perangkat input video'));
+        logError(
+          "Tidak ada kamera ditemukan",
+          new Error("Tidak ada perangkat input video"),
+        );
         return [];
       }
 
       if (cameraSelect) {
-        cameraSelect.innerHTML = '';
+        const selectEl = cameraSelect;
+        selectEl.innerHTML = "";
         cameras.forEach((camera, index) => {
-          const option = document.createElement('option');
+          const option = document.createElement("option");
           option.value = camera.deviceId;
           option.textContent = camera.label || `Kamera ${index + 1}`;
-          cameraSelect.appendChild(option);
+          selectEl.appendChild(option);
         });
       }
 
       return cameras;
     } catch (error) {
-      logError.error('Gagal memuat kamera:', error);
-      throw new Error('Tidak dapat mengakses kamera. Pastikan izin diberikan.');
+      logError.error("Gagal memuat kamera:", error);
+      throw new Error("Tidak dapat mengakses kamera. Pastikan izin diberikan.");
     }
   }
 
@@ -64,14 +75,14 @@ class CameraService {
 
       return true;
     } catch (error) {
-      console.error('Gagal memulai kamera:', error);
+      console.error("Gagal memulai kamera:", error);
       throw new Error(getCameraErrorMessage(error));
     }
   }
 
   stopCamera() {
     if (this.stream) {
-      this.stream.getTracks().forEach(track => track.stop());
+      this.stream.getTracks().forEach((track) => track.stop());
       this.stream = null;
     }
     if (this.video) {
@@ -96,7 +107,7 @@ class CameraService {
       return null;
     }
 
-    const ctx = this.canvas.getContext('2d');
+    const ctx = this.canvas.getContext("2d");
     this.canvas.width = this.video.videoWidth;
     this.canvas.height = this.video.videoHeight;
     ctx.drawImage(this.video, 0, 0);

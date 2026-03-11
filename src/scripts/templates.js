@@ -1,5 +1,4 @@
 // src/scripts/templates.js
-
 export function generateCameraSection() {
   return `
     <section class="camera-section">
@@ -48,16 +47,6 @@ export function generateCameraSection() {
   `;
 }
 
-export function generateInfoPanel() {
-  return `
-    <section class="results-section">
-      ${generateIdleState()}
-      ${generateLoadingState()}
-      ${generateResultState()}
-    </section>
-  `;
-}
-
 function generateIdleState() {
   return `
     <div id="state-idle" class="result-card idle-card">
@@ -65,7 +54,7 @@ function generateIdleState() {
         <i data-lucide="sparkles" width="40" height="40"></i>
       </div>
       <h2>Scan Sayuran</h2>
-      <p>Ketuk tombol di bawah untuk memulai dan temukan fakta menarik tentang sayuran!</p>
+      <p>Ketuk tombol scan untuk memulai dan temukan fakta menarik tentang sayuran!</p>
     </div>
   `;
 }
@@ -122,6 +111,16 @@ function generateResultState() {
         <span>Salin dan bagikan ke teman!</span>
       </div>
     </div>
+  `;
+}
+
+export function generateInfoPanel() {
+  return `
+    <section class="results-section">
+      ${generateIdleState()}
+      ${generateLoadingState()}
+      ${generateResultState()}
+    </section>
   `;
 }
 

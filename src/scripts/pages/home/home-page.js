@@ -10,8 +10,8 @@ import {
   setElementDisplay,
   addFadeInAnimation,
   setElementStyle,
-  logError
-} from '../../utils/index.js';
+  logError,
+} from "../../utils/index.js";
 
 export default class HomePage {
   #presenter = null;
@@ -33,50 +33,55 @@ export default class HomePage {
   }
 
   #bindEvents() {
-    const toggleBtn = document.getElementById('btn-toggle');
-    const fpsSlider = document.getElementById('fps-slider');
-    const fpsLabel = document.getElementById('fps-label');
-    const toneSelect = document.getElementById('tone-select');
-    const copyBtn = document.getElementById('btn-copy');
+    const toggleBtn = document.getElementById("btn-toggle");
+    const fpsSlider = document.getElementById("fps-slider");
+    const fpsLabel = document.getElementById("fps-label");
+    const toneSelect = document.getElementById("tone-select");
+    const copyBtn = document.getElementById("btn-copy");
 
-    toggleBtn?.addEventListener('click', () => this.#presenter.toggleCamera());
+    toggleBtn?.addEventListener("click", () => this.#presenter.toggleCamera());
 
     if (fpsSlider) {
-      fpsSlider.addEventListener('input', (e) => {
+      fpsSlider.addEventListener("input", (e) => {
         const val = e.target.value;
-        if (fpsLabel) fpsLabel.textContent = val + ' FPS';
+        if (fpsLabel) {
+          fpsLabel.textContent = `${val} FPS`;
+        }
         this.#presenter.setFPS(parseInt(val, 10));
       });
     }
 
-    toneSelect?.addEventListener('change', (e) => {
+    toneSelect?.addEventListener("change", (e) => {
       this.#presenter.setTone(e.target.value);
     });
 
-    copyBtn?.addEventListener('click', () => {
-      const factText = document.getElementById('fun-fact-text')?.textContent;
-      if (factText) this.#presenter.copyFactToClipboard(factText);
+    copyBtn?.addEventListener("click", () => {
+      const factText = document.getElementById("fun-fact-text")?.textContent;
+      if (factText) {
+        this.#presenter.copyFactToClipboard(factText);
+      }
     });
 
-    window.addEventListener('beforeunload', () => {
+    window.addEventListener("beforeunload", () => {
       this.#presenter.stopCamera();
     });
   }
 
-  // ========== METODE VIEW ==========
   updateHeaderStatus(message, type) {
-    const statusText = document.getElementById('status-text');
-    const statusDot = document.getElementById('status-dot');
-    if (statusText) statusText.textContent = message;
+    const statusText = document.getElementById("status-text");
+    const statusDot = document.getElementById("status-dot");
+    if (statusText) {
+      statusText.textContent = message;
+    }
     if (statusDot) {
-      statusDot.className = 'status-dot ' + (type || '');
+      statusDot.className = `status-dot ${type || ""}`;
     }
   }
 
   showLoadingProgress(percent, message) {
-    const statusText = document.getElementById('status-text');
+    const statusText = document.getElementById("status-text");
     if (statusText) {
-      if (message.includes('%')) {
+      if (message.includes("%")) {
         statusText.textContent = message;
       } else {
         statusText.textContent = `${message} (${percent}%)`;
@@ -85,58 +90,68 @@ export default class HomePage {
   }
 
   enableToggleButton() {
-    const btn = document.getElementById('btn-toggle');
-    if (btn) btn.disabled = false;
+    const btn = document.getElementById("btn-toggle");
+    if (btn) {
+      btn.disabled = false;
+    }
   }
 
   getCameraSelect() {
-    return document.getElementById('camera-select');
+    return document.getElementById("camera-select");
   }
 
   showCameraActive() {
     // console.log('showCameraActive');
-    const placeholder = document.getElementById('camera-placeholder');
-    const video = document.getElementById('media-video');
-    const overlay = document.getElementById('camera-overlay');
-    if (placeholder) setElementDisplay(placeholder, 'none');
-    if (video) {
-      setElementDisplay(video, 'block');
-      video.play().catch(e => logError('Video play error', e));
+    const placeholder = document.getElementById("camera-placeholder");
+    const video = document.getElementById("media-video");
+    const overlay = document.getElementById("camera-overlay");
+    if (placeholder) {
+      setElementDisplay(placeholder, "none");
     }
-    if (overlay) setElementDisplay(overlay, 'block');
+    if (video) {
+      setElementDisplay(video, "block");
+      video.play().catch((e) => logError("Video play error", e));
+    }
+    if (overlay) {
+      setElementDisplay(overlay, "block");
+    }
   }
 
   showCameraInactive() {
     // console.log('showCameraInactive');
-    const placeholder = document.getElementById('camera-placeholder');
-    const video = document.getElementById('media-video');
-    const overlay = document.getElementById('camera-overlay');
-    if (placeholder) setElementDisplay(placeholder, 'flex');
+    const placeholder = document.getElementById("camera-placeholder");
+    const video = document.getElementById("media-video");
+    const overlay = document.getElementById("camera-overlay");
+    if (placeholder) {
+      setElementDisplay(placeholder, "flex");
+    }
     if (video) {
       video.pause();
-      setElementDisplay(video, 'none');
+      setElementDisplay(video, "none");
     }
-    if (overlay) setElementDisplay(overlay, 'none');
+    if (overlay) {
+      setElementDisplay(overlay, "none");
+    }
   }
 
   showIdleState() {
     // console.log('showIdleState');
-    setElementDisplay(document.getElementById('state-idle'), 'block');
-    setElementDisplay(document.getElementById('state-loading'), 'none');
-    setElementDisplay(document.getElementById('state-result'), 'none');
-    document.getElementById('state-idle')?.classList.remove('hidden');
-    document.getElementById('state-loading')?.classList.add('hidden');
-    document.getElementById('state-result')?.classList.add('hidden');
+    setElementDisplay(document.getElementById("state-idle"), "block");
+    setElementDisplay(document.getElementById("state-loading"), "none");
+    setElementDisplay(document.getElementById("state-result"), "none");
+    document.getElementById("state-idle")?.classList.remove("hidden");
+    document.getElementById("state-loading")?.classList.add("hidden");
+    document.getElementById("state-result")?.classList.add("hidden");
   }
 
   showLoadingState() {
     // console.log('showLoadingState');
-    setElementDisplay(document.getElementById('state-idle'), 'none');
-    setElementDisplay(document.getElementById('state-loading'), 'block');
-    setElementDisplay(document.getElementById('state-result'), 'none');
-    document.getElementById('state-idle')?.classList.add('hidden');
-    document.getElementById('state-loading')?.classList.remove('hidden');
-    document.getElementById('state-result')?.classList.add('hidden');
+    setElementDisplay(document.getElementById("state-idle"), "none");
+    setElementDisplay(document.getElementById("state-loading"), "block");
+    setElementDisplay(document.getElementById("state-result"), "none");
+    document.getElementById("state-idle")?.classList.add("hidden");
+    document.getElementById("state-loading")?.classList.remove("hidden");
+    document.getElementById("state-result")?.classList.add("hidden");
   }
 
   showAnalyzingState() {
@@ -145,79 +160,93 @@ export default class HomePage {
 
   showResultState(className, confidence) {
     // console.log('showResultState', className, confidence);
-    const stateIdle = document.getElementById('state-idle');
-    const stateLoading = document.getElementById('state-loading');
-    const stateResult = document.getElementById('state-result');
+    const stateIdle = document.getElementById("state-idle");
+    const stateLoading = document.getElementById("state-loading");
+    const stateResult = document.getElementById("state-result");
 
-    if (stateIdle) setElementDisplay(stateIdle, 'none');
-    if (stateLoading) setElementDisplay(stateLoading, 'none');
+    if (stateIdle) {
+      setElementDisplay(stateIdle, "none");
+    }
+    if (stateLoading) {
+      setElementDisplay(stateLoading, "none");
+    }
     if (stateResult) {
-      setElementDisplay(stateResult, 'block');
-      stateResult.classList.remove('hidden');
+      setElementDisplay(stateResult, "block");
+      stateResult.classList.remove("hidden");
       addFadeInAnimation(stateResult);
     }
 
-    const nameEl = document.getElementById('detected-name');
-    const confEl = document.getElementById('detected-confidence');
-    const fillEl = document.getElementById('confidence-fill');
+    const nameEl = document.getElementById("detected-name");
+    const confEl = document.getElementById("detected-confidence");
+    const fillEl = document.getElementById("confidence-fill");
 
-    if (nameEl) setElementText(nameEl, className);
-    if (confEl) setElementText(confEl, confidence + '%');
-    if (fillEl) setElementStyle(fillEl, 'width', confidence + '%');
+    if (nameEl) {
+      setElementText(nameEl, className);
+    }
+    if (confEl) {
+      setElementText(confEl, `${confidence}%`);
+    }
+    if (fillEl) {
+      setElementStyle(fillEl, "width", `${confidence}%`);
+    }
   }
 
   showFactLoading() {
     // console.log('showFactLoading');
-    const factLoading = document.getElementById('fun-fact-loading');
-    const factContent = document.getElementById('fun-fact-content');
+    const factLoading = document.getElementById("fun-fact-loading");
+    const factContent = document.getElementById("fun-fact-content");
     if (factLoading) {
-      factLoading.classList.remove('hidden');
-      setElementDisplay(factLoading, 'flex');
+      factLoading.classList.remove("hidden");
+      setElementDisplay(factLoading, "flex");
     }
     if (factContent) {
-      factContent.classList.add('hidden');
-      setElementDisplay(factContent, 'none');
+      factContent.classList.add("hidden");
+      setElementDisplay(factContent, "none");
     }
   }
 
   showFact(fact) {
     // console.log('showFact', fact);
-    const factLoading = document.getElementById('fun-fact-loading');
-    const factContent = document.getElementById('fun-fact-content');
-    const factText = document.getElementById('fun-fact-text');
+    const factLoading = document.getElementById("fun-fact-loading");
+    const factContent = document.getElementById("fun-fact-content");
+    const factText = document.getElementById("fun-fact-text");
     if (factLoading) {
-      factLoading.classList.add('hidden');
-      setElementDisplay(factLoading, 'none');
+      factLoading.classList.add("hidden");
+      setElementDisplay(factLoading, "none");
     }
     if (factContent) {
-      factContent.classList.remove('hidden');
-      setElementDisplay(factContent, 'block');
+      factContent.classList.remove("hidden");
+      setElementDisplay(factContent, "block");
     }
-    if (factText) setElementText(factText, fact);
+    if (factText) {
+      setElementText(factText, fact);
+    }
   }
 
-  showFactError(message = 'Gagal memuat fakta. Coba lagi.') {
+  showFactError(message = "Gagal memuat fakta. Coba lagi.") {
     // console.log('showFactError', message);
-    const factLoading = document.getElementById('fun-fact-loading');
-    const factContent = document.getElementById('fun-fact-content');
-    const factText = document.getElementById('fun-fact-text');
+    const factLoading = document.getElementById("fun-fact-loading");
+    const factContent = document.getElementById("fun-fact-content");
+    const factText = document.getElementById("fun-fact-text");
     if (factLoading) {
-      factLoading.classList.add('hidden');
-      setElementDisplay(factLoading, 'none');
+      factLoading.classList.add("hidden");
+      setElementDisplay(factLoading, "none");
     }
     if (factContent) {
-      factContent.classList.remove('hidden');
-      setElementDisplay(factContent, 'block');
+      factContent.classList.remove("hidden");
+      setElementDisplay(factContent, "block");
     }
-    if (factText) setElementText(factText, message);
+    if (factText) {
+      setElementText(factText, message);
+    }
   }
 
   showCopySuccess() {
-    alert('Fakta disalin!');
+    alert("Fakta disalin!");
   }
 
   showCopyError() {
-    alert('Gagal menyalin.');
+    alert("Gagal menyalin.");
   }
 
   showError(message) {

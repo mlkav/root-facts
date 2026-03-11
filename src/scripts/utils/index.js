@@ -1,23 +1,19 @@
 // src/scripts/utils/index.js
-import {
-  APP_CONFIG,
-  UI_CONFIG,
-  CAMERA_CONFIG,
-} from "../config.js";
+import { APP_CONFIG, UI_CONFIG, CAMERA_CONFIG } from "../config.js";
 
-export const isMobileDevice = () => {
-  return (
-    navigator.userAgentData?.mobile ??
-    /Android|iPhone|iPad|iPod/i.test(navigator.userAgent)
-  );
-};
+export const isMobileDevice = () =>
+  navigator.userAgentData?.mobile ??
+  /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 
 export const createDelay = (ms) =>
-  new Promise((resolve) => setTimeout(resolve, ms));
+  new Promise((resolve) => {
+    setTimeout(resolve, ms);
+  });
 
-export const sleep = (time = 1000) => {
-  return new Promise((resolve) => setTimeout(resolve, time));
-};
+export const sleep = (time = 1000) =>
+  new Promise((resolve) => {
+    setTimeout(resolve, time);
+  });
 
 export function showFormattedDate(date, locale = "en-US", options = {}) {
   return new Date(date).toLocaleDateString(locale, {
@@ -30,6 +26,7 @@ export function showFormattedDate(date, locale = "en-US", options = {}) {
 
 export const isValidDetection = (result) => {
   const { detectionConfidenceThreshold } = APP_CONFIG;
+
   return (
     result &&
     result.isValid &&
@@ -37,14 +34,15 @@ export const isValidDetection = (result) => {
   );
 };
 
-export const validateModelMetadata = (metadata) => {
-  return metadata && metadata.labels && Array.isArray(metadata.labels);
-};
+export const validateModelMetadata = (metadata) =>
+  metadata && metadata.labels && Array.isArray(metadata.labels);
 
 export const getConfidenceTheme = (confidence) => {
   const { excellent, good } = UI_CONFIG.confidenceThresholds;
+
   if (confidence >= excellent) return "green";
   if (confidence >= good) return "yellow";
+
   return "red";
 };
 
@@ -60,16 +58,22 @@ export const getConfidenceCardClass = (confidence) => {
 
 export const getCameraConfig = () => {
   const mobile = isMobileDevice();
+
   return {
     defaultFPS: CAMERA_CONFIG.defaultFPS,
     fpsRange: CAMERA_CONFIG.fpsRange,
-    resolution: mobile ? CAMERA_CONFIG.mobileResolution : CAMERA_CONFIG.desktopResolution,
-    facingMode: mobile ? CAMERA_CONFIG.mobileFacingMode : CAMERA_CONFIG.desktopFacingMode,
+    resolution: mobile
+      ? CAMERA_CONFIG.mobileResolution
+      : CAMERA_CONFIG.desktopResolution,
+    facingMode: mobile
+      ? CAMERA_CONFIG.mobileFacingMode
+      : CAMERA_CONFIG.desktopFacingMode,
   };
 };
 
 export const getCameraConstraints = (selectedCameraId) => {
   const config = getCameraConfig();
+
   return {
     video: {
       deviceId: selectedCameraId ? { exact: selectedCameraId } : undefined,
@@ -84,34 +88,43 @@ export const getCameraConstraints = (selectedCameraId) => {
 export const getCameraErrorMessage = (error) => {
   if (error.name === "NotAllowedError") {
     return "Izin kamera ditolak. Harap izinkan akses kamera.";
-  } else if (error.name === "NotFoundError") {
+  }
+
+  if (error.name === "NotFoundError") {
     return "Tidak ada kamera ditemukan pada perangkat ini.";
-  } else if (error.name === "NotReadableError") {
+  }
+
+  if (error.name === "NotReadableError") {
     return "Kamera sedang digunakan oleh aplikasi lain.";
   }
+
   return "Gagal memulai kamera";
 };
 
 export const addFadeInAnimation = (element) => {
   if (!element) return;
 
+  const el = element;
   const { fadeAnimation } = UI_CONFIG;
-  element.style.animation = "none";
-  void element.offsetWidth;
-  element.style.animation = fadeAnimation;
+
+  el.style.animation = "none";
+  el.style.animation = fadeAnimation;
 };
 
 export const addScaleAnimation = (element, callback) => {
   if (!element) return;
 
+  const el = element;
   const { animationDuration } = UI_CONFIG;
-  element.style.transform = "scale(1.02)";
-  element.style.transition = `transform ${animationDuration}ms ease`;
+
+  el.style.transform = "scale(1.02)";
+  el.style.transition = `transform ${animationDuration}ms ease`;
 
   setTimeout(() => {
-    if (element) {
-      element.style.transform = "scale(1)";
+    if (el) {
+      el.style.transform = "scale(1)";
     }
+
     if (callback) {
       callback();
     }
@@ -119,81 +132,116 @@ export const addScaleAnimation = (element, callback) => {
 };
 
 export const hideElement = (element) => {
-  if (element) element.classList.add("hidden");
+  if (!element) return;
+
+  const el = element;
+  el.classList.add("hidden");
 };
 
 export const showElement = (element) => {
-  if (element) element.classList.remove("hidden");
+  if (!element) return;
+
+  const el = element;
+  el.classList.remove("hidden");
 };
 
 export const setElementOpacity = (element, opacity) => {
-  if (element) element.style.opacity = opacity;
+  if (!element) return;
+
+  const el = element;
+  el.style.opacity = opacity;
 };
 
 export const setElementText = (element, text) => {
-  if (element) element.textContent = text;
+  if (!element) return;
+
+  const el = element;
+  el.textContent = text;
 };
 
 export const setElementHTML = (element, html) => {
-  if (element) element.innerHTML = html;
+  if (!element) return;
+
+  const el = element;
+  el.innerHTML = html;
 };
 
 export const setElementDisplay = (element, value) => {
-  if (element) element.style.display = value;
+  if (!element) return;
+
+  const el = element;
+  el.style.display = value;
 };
 
 export const setElementStyle = (element, property, value) => {
-  if (element) element.style[property] = value;
+  if (!element) return;
+
+  const el = element;
+  el.style[property] = value;
 };
 
 export const logError = (context, error) => {
   console.error(`❌ ${context}:`, error);
 };
 
-export const isWebGPUSupported = () => {
-  return typeof navigator !== "undefined" && "gpu" in navigator;
-};
+export const isWebGPUSupported = () =>
+  typeof navigator !== "undefined" && "gpu" in navigator;
 
 export const createModelProgressCallback = (onProgress, throttleMs = 200) => {
   const fileProgress = {};
-  let lastMessage = '';
+  let lastMessage = "";
   let lastCallTime = 0;
 
   return (progress) => {
-    if (progress.status !== 'progress' || !progress.file) return;
+    if (progress.status !== "progress" || !progress.file) return;
 
-    const isEncoder = progress.file.includes('encoder');
-    const isDecoder = progress.file.includes('decoder');
+    const isEncoder = progress.file.includes("encoder");
+    const isDecoder = progress.file.includes("decoder");
+
     if (!isEncoder && !isDecoder) return;
 
     let raw = progress.progress;
-    if (raw > 1) raw = raw / 100;
+
+    if (raw > 1) raw /= 100;
+
     fileProgress[progress.file] = Math.round(raw * 100);
 
-    const encoderFiles = Object.entries(fileProgress)
-      .filter(([file]) => file.includes('encoder'));
-    const decoderFiles = Object.entries(fileProgress)
-      .filter(([file]) => file.includes('decoder'));
+    const encoderFiles = Object.entries(fileProgress).filter(([file]) =>
+      file.includes("encoder"),
+    );
+
+    const decoderFiles = Object.entries(fileProgress).filter(([file]) =>
+      file.includes("decoder"),
+    );
 
     const average = (entries) => {
       if (entries.length === 0) return 0;
+
       const sum = entries.reduce((acc, [, val]) => acc + val, 0);
       return Math.round(sum / entries.length);
     };
 
     const encoder = average(encoderFiles);
     const decoder = average(decoderFiles);
+
     const message = `Mengunduh model AI... \nEncoder: ${encoder}% | Decoder: ${decoder}%`;
 
     if (message === lastMessage) return;
 
     const now = Date.now();
+
     if (now - lastCallTime < throttleMs) return;
+
     lastCallTime = now;
     lastMessage = message;
 
-    if (onProgress && typeof onProgress === 'function') {
-      onProgress({ status: 'downloading', encoder, decoder, message });
+    if (onProgress && typeof onProgress === "function") {
+      onProgress({
+        status: "downloading",
+        encoder,
+        decoder,
+        message,
+      });
     }
   };
 };
